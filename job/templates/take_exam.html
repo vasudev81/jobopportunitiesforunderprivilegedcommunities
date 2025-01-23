@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ exam.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <div class="container mx-auto py-8">
+        <!-- Exam Title and Timer -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">{{ exam.title }}</h1>
+            <div id="timer" class="text-xl font-semibold text-red-600"></div>
+        </div>
+
+        <!-- Warning Alert (hidden by default) -->
+        <div id="warningAlert" class="hidden mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" role="alert">
+            <strong>Malpractice detected!</strong> Please avoid further malpractice.
+        </div>
+
+        <!-- Exam Form -->
+        <form id="examForm" method="POST">
+            {% csrf_token %}
+            <div id="questions" class="space-y-6">
+                {% for question in questions %}
+                <div class="bg-white p-6 rounded shadow">
+                    <h3 class="font-semibold text-lg mb-2">Question {{ forloop.counter }}: {{ question.question_text }}</h3>
+                    <textarea name="responses" data-question-id="{{ question.id }}" rows="4" class="w-full p-2 border rounded" required></textarea>
+                    <input type="hidden" name="question_ids" value="{{ question.id }}">
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Finish Exam Button -->
+            <div class="mt-6 flex justify-between">
+                <button type="button" id="finishButton" class="bg-yellow-500 text-white font-bold py-2 px-4 rounded hover:bg-yellow-600">Finish Exam</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const examForm = document.getElementById('examForm');
+        const warningAlert = document.getElementById('warningAlert');
+        const timerElement = document.getElementById('timer');
+        const minTypingDelay = 100; // in milliseconds
+        const minTypingLength = 20; // minimum character length to start tracking irregularities
+        const timeLimit = {{ exam.time_limit }} * 60; // Convert minutes to seconds
+        let lastInputLength = {};
+        let lastTypingTime = {};
+        let warningCount = 0;
+        let timeRemaining = timeLimit;
+
+        // Prohibit page refresh
+        document.addEventListener("keydown", function (e) {
+            if ((e.key === "F5") || (e.key === "r" && (e.ctrlKey || e.metaKey))) {
+                e.preventDefault();
+            }
+        });
+
+        // Timer countdown
+        const timerInterval = setInterval(() => {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timerElement.textContent = `Time Left: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            timeRemaining--;
+
+            if (timeRemaining < 0) {
+                clearInterval(timerInterval);
+                submitExam(); // Automatically submit when time is up
+            }
+        }, 1000);
+
+        // Paste detection
+        examForm.addEventListener('paste', function (e) {
+            warningCount += 1;
+            warningAlert.classList.remove('hidden');
+            
+            // Hide warning after 2 seconds
+            setTimeout(() => {
+                warningAlert.classList.add('hidden');
+            }, 2000);
+        });
+
+        // Typing irregularity detection
+        examForm.addEventListener('input', function (e) {
+            const textarea = e.target;
+            const questionId = textarea.dataset.questionId;
+            const currentTime = new Date().getTime();
+            
+            // Initialize for new question
+            if (!lastInputLength[questionId]) {
+                lastInputLength[questionId] = textarea.value.length;
+                lastTypingTime[questionId] = currentTime;
+                return;
+            }
+
+            const currentLength = textarea.value.length;
+            const timeDiff = currentTime - lastTypingTime[questionId];
+
+            if (currentLength > minTypingLength) { 
+                const typingDifference = currentLength - lastInputLength[questionId];
+                if (typingDifference > 50 || (timeDiff < minTypingDelay && typingDifference > 0)) {
+                    // Show warning message for malpractice detection
+                    warningCount += 1;
+                    warningAlert.classList.remove('hidden');
+
+                    // Hide warning after 2 seconds
+                    setTimeout(() => {
+                        warningAlert.classList.add('hidden');
+                    }, 2000);
+                }
+            }
+
+            lastInputLength[questionId] = currentLength;
+            lastTypingTime[questionId] = currentTime;
+        });
+
+        // Handle "Finish Exam" button click
+        document.getElementById('finishButton').addEventListener('click', function () {
+            if (confirm("Are you sure you want to finish the exam?")) {
+                submitExam(); // Submit the exam on finish button click
+            }
+        });
+
+        function submitExam() {
+            clearInterval(timerInterval);
+
+            const formData = new FormData(examForm);
+            formData.append('warning_count', warningCount);  // Include malpractice warning count
+
+            // Submit exam via AJAX to handle response without page reload
+            fetch("{% url 'take_exam' exam.id  %}", {
+                method: "POST",
+                body: formData
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(data => {
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;  // Redirect to exam completed page for all users
+                } else {
+                    console.error("Unexpected response format:", data);
+                }
+            }).catch(error => {
+                console.error("Error submitting exam:", error);
+            });
+        }
+    </script>
+</body>
+</html>

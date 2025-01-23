@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>JobSeeker - Find Your Dream Job</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        <script>
+            // Toggle Navbar for mobile view
+            function toggleNavbar() {
+                document.getElementById('mobile-menu').classList.toggle('hidden');
+            }
+            // Toggle individual dropdowns for both desktop and mobile
+            function toggleDropdown(dropdownId) {
+                document.getElementById(dropdownId).classList.toggle('hidden');
+            }
+        </script>
+    </head>
+    <body class="bg-white text-black">
+
+        <!-- Hero Section (Full-Screen) -->
+        <section class="relative h-screen bg-cover bg-center" style="background-image: url('https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg');">
+            <!-- Overlay for Blending -->
+            <div class="absolute inset-0 bg-blue-900 opacity-60"></div>
+
+            <!-- Navbar -->
+            <nav class="fixed w-full z-10 top-0 opacity-90 shadow">
+                <div class="container mx-auto flex flex-wrap items-center justify-between p-4">
+                    <div class="flex items-center">
+                        <a href="#" class="text-white font-bold text-5xl">JobSeeker</a>
+                    </div>
+
+                    <!-- Toggle Button for Mobile Menu -->
+                    <button class="text-white md:hidden" onclick="toggleNavbar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+
+                    <!-- Desktop Navbar Links -->
+                    <div class="hidden md:flex md:items-center md:space-x-6">
+                        <a href="#" class="text-gray-300 hover:text-white">Home</a>
+
+                        <!-- Register Dropdown for Desktop -->
+                        <div class="relative">
+                            <button onclick="toggleDropdown('desktop-register-dropdown')" class="text-gray-300 hover:text-white">Register <i class="fas fa-chevron-down ml-1"></i></button>
+                            <div id="desktop-register-dropdown" class="hidden absolute bg-gray-200 text-black mt-2 rounded shadow-md w-40 z-20">
+                                <a href="/jobseeker-register/" class="block px-4 py-2 hover:bg-gray-200">Jobseeker Register</a>
+                                <a href="/jobproviderreg/" class="block px-4 py-2 hover:bg-gray-200">Job Provider Register</a>
+                            </div>
+                        </div>
+
+                        <!-- Login Dropdown for Desktop -->
+                        <div class="relative">
+                            <button onclick="toggleDropdown('desktop-login-dropdown')" class="text-gray-300 hover:text-white">Login <i class="fas fa-chevron-down ml-1"></i></button>
+                            <div id="desktop-login-dropdown" class="hidden absolute bg-white text-black mt-2 rounded shadow-md w-40 z-20">
+                                <a href="/jobseeker-login/" class="block px-4 py-2 hover:bg-gray-200">Jobseeker Login</a>
+                                <a href="/jobproviderlogin/" class="block px-4 py-2 hover:bg-gray-200">Job Provider Login</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Menu -->
+                    <div id="mobile-menu" class="hidden md:hidden w-full bg-blue-900 text-white mt-4">
+                        <a href="#" class="block px-4 py-2 hover:bg-blue-800">Home</a>
+
+                        <!-- Register Dropdown for Mobile -->
+                        <div class="relative">
+                            <button onclick="toggleDropdown('mobile-register-dropdown')" class="w-full text-left px-4 py-2 hover:bg-blue-800">Register <i class="fas fa-chevron-down ml-1"></i></button>
+                            <div id="mobile-register-dropdown" class="hidden bg-white text-black mt-1 rounded shadow-md w-full">
+                                <a href="/jobseeker-register/" class="block px-4 py-2 hover:bg-gray-200">Jobseeker Register</a>
+                                <a href="/jobproviderreg/" class="block px-4 py-2 hover:bg-gray-200">Job Provider Register</a>
+                            </div>
+                        </div>
+
+                        <!-- Login Dropdown for Mobile -->
+                        <div class="relative">
+                            <button onclick="toggleDropdown('mobile-login-dropdown')" class="w-full text-left px-4 py-2 hover:bg-blue-800">Login <i class="fas fa-chevron-down ml-1"></i></button>
+                            <div id="mobile-login-dropdown" class="hidden bg-white text-black mt-1 rounded shadow-md w-full">
+                                <a href="/jobseeker-login/" class="block px-4 py-2 hover:bg-gray-200">Jobseeker Login</a>
+                                <a href="/jobproviderlogin/" class="block px-4 py-2 hover:bg-gray-200">Job Provider Login</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Hero Content -->
+            <div class="relative h-full flex items-center justify-center text-center text-white px-4">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold">Find Your Dream Job</h2>
+                    <p class="mt-4 text-md md:text-lg">Connecting you with opportunities that fit your skills and goals.</p>
+                    
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-12 px-4 bg-white">
+            <div
+                class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <img
+                        src="https://images.pexels.com/photos/3184357/pexels-photo-3184357.jpeg"
+                        alt="About Us" class="w-full rounded-lg">
+                </div>
+                <div class="flex flex-col justify-center">
+                    <h3
+                        class="text-2xl md:text-3xl font-bold text-blue-700">About
+                        JobSeeker</h3>
+                    <p class="mt-4 text-sm md:text-base">At JobSeeker, our
+                        mission is to help you find the best job opportunities
+                        that align with your ambitions. Join us and kickstart
+                        your journey towards a rewarding career.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Jobs Section -->
+        <section id="jobs" class="py-12 px-4 bg-yellow-400 text-black">
+            <div class="container mx-auto text-center">
+                <h3 class="text-2xl md:text-3xl font-bold">Latest Job
+                    Openings</h3>
+                <p class="mt-2 mb-8 text-sm md:text-base">Explore the most
+                    recent job listings.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Job Card 1 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <i
+                            class="fas fa-briefcase text-blue-700 text-2xl md:text-3xl mb-4"></i>
+                        <h4 class="text-lg md:text-xl font-bold">Software
+                            Engineer</h4>
+                        <p class="mt-2 text-sm md:text-base">Join a leading tech
+                            company and work on cutting-edge projects.</p>
+                    </div>
+                    <!-- Job Card 2 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <i
+                            class="fas fa-paint-brush text-blue-700 text-2xl md:text-3xl mb-4"></i>
+                        <h4 class="text-lg md:text-xl font-bold">Graphic
+                            Designer</h4>
+                        <p class="mt-2 text-sm md:text-base">Looking for a
+                            creative professional to design impactful
+                            visuals.</p>
+                    </div>
+                    <!-- Job Card 3 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <i
+                            class="fas fa-handshake text-blue-700 text-2xl md:text-3xl mb-4"></i>
+                        <h4 class="text-lg md:text-xl font-bold">Sales
+                            Executive</h4>
+                        <p class="mt-2 text-sm md:text-base">We are seeking a
+                            passionate salesperson to grow our brand.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+
+        <!-- Footer -->
+        <footer class="bg-black text-white py-4 text-center">
+            <p>&copy; 2024 JobSeeker. All rights reserved.</p>
+        </footer>
+
+        <script>
+            // Toggle individual dropdowns for mobile
+            function toggleDropdown(dropdownId) {
+                document.getElementById(dropdownId).classList.toggle('hidden');
+            }
+        </script>
+
+    </body>
+</html>
